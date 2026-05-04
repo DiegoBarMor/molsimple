@@ -1,3 +1,4 @@
+_keys_other = set(globals().keys()) | {"_keys_other"}
 LENGTH_RECORD: int = 80
 SERIAL_NUM_START: int = 6
 SERIAL_NUM_END:   int = 11
@@ -29,6 +30,16 @@ ELEMENT_SYMBOL_START: int = 76
 ELEMENT_SYMBOL_END:   int = 78
 CHARGE_START: int = 78
 CHARGE_END:   int = 80
+_pdb_constants = {
+    k:v for k,v in globals().items() if k not in _keys_other
+}
+del _keys_other
+
+def get_pdb_constants(skip_length_record: bool = True) -> dict[str, int]:
+    obj = _pdb_constants.copy()
+    if skip_length_record:
+        obj.pop("LENGTH_RECORD")
+    return obj
 
 from .parts.atom import Atom
 from .parts.residue import Residue
