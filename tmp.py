@@ -1,7 +1,10 @@
-from pathlib import Path
+import sys
 import molsimple as ms
 
-pg = ms.ParticleGroup.from_pdb(
-    Path("testdata/ade.pdb").read_text()
-)
-print(*pg.particles[:15], sep="\n")
+pdb = ms.System(sys.argv[1])
+print(pdb)
+
+for pgroup in pdb.models[:3]:
+    print("----------------")
+    print(pgroup)
+    print(*pgroup.particles[:5], sep="\n")
