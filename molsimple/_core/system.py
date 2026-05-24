@@ -38,8 +38,8 @@ class System:
 
     # --------------------------------------------------------------------------
     def _iter_parse_models(self):
-        def _extract_next_model(start: int = 0) -> tuple[int, str]:
-            idx_0 = buffer.find("\nMODEL", start)
+        def _extract_next_model() -> tuple[int, str]:
+            idx_0 = buffer.find("\nMODEL")
             if idx_0 == -1: return -1, buffer
 
             idx_1 = buffer.find("\nENDMDL", idx_0)

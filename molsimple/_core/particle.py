@@ -39,4 +39,15 @@ class Particle:
         return f"Particle({self.idx:>5}:{self.name:<4} @res {self.resid:>4}:{self.resname:<3} @chain {self.chainid}; [{self.xpos},{self.ypos},{self.zpos}])"
 
 
+    # --------------------------------------------------------------------------
+    def format_pdb(self) -> str:
+        return ''.join((
+           f"{'HETATM' if self.hetatm else 'ATOM  '}{self.idx:>5} {self.name:<4}",
+           f"{self.altloc:1}{self.resname:>3} {self.chainid:1}{self.resid:>4}",
+           f"{self.inscode:1}   {self.xpos:8.3f}{self.ypos:8.3f}{self.zpos:8.3f}",
+           f"{self.occ:6.2f}{self.beta:6.2f}      {self.segid:<4}",
+           f"{self.element:>2}{self.charge:>2}"
+        ))
+
+
 # //////////////////////////////////////////////////////////////////////////////
