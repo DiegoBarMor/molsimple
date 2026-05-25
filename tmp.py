@@ -7,4 +7,4 @@ print(pdb)
 for pgroup in pdb.models[:3]:
     print("----------------")
     print(pgroup)
-    print(*pgroup.particles[:5], sep="\n")
+    print(*pgroup.select_idx(1,2,5).particles, sep="\n")

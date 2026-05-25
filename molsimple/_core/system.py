@@ -29,6 +29,16 @@ class System:
 
 
     # --------------------------------------------------------------------------
+    def __len__(self):
+        return len(self.particles)
+
+
+    # --------------------------------------------------------------------------
+    def __iter__(self):
+        return iter(self.particles)
+
+
+    # --------------------------------------------------------------------------
     def switch_model(self, idx_model: int):
         if idx_model < 0 or idx_model >= len(self.models):
             raise ValueError(f"Invalid model index {idx_model} (must be between 0 and {len(self.models)-1}).")
@@ -51,7 +61,7 @@ class System:
         buffer = '\n' + self.raw_pdb
         while buffer:
             idx, raw_model = _extract_next_model()
-            pg = ms.ParticleGroup(raw_model)
+            pg = ms.ParticleGroup.parse_pdb(raw_model)
             if not pg.is_empty(): yield pg
             if idx == -1: break
             buffer = buffer[idx:]
