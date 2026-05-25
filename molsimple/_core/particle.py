@@ -40,6 +40,12 @@ class Particle:
 
 
     # --------------------------------------------------------------------------
+    def get_chain_resid(self) -> "ms.ChainResid":
+        """Returns a `ChainResid` object representing the chain and residue of this particle."""
+        return ms.ChainResid(self.chainid, self.resid)
+
+
+    # --------------------------------------------------------------------------
     def format_pdb(self) -> str:
         return ''.join((
            f"{'HETATM' if self.hetatm else 'ATOM  '}{self.idx:>5} {self.name:<4}",
