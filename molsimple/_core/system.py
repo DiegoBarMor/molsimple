@@ -4,21 +4,21 @@ import molsimple as ms
 
 # //////////////////////////////////////////////////////////////////////////////
 class System:
-    def __init__(self, path_pdb: Path|str):
-        self.path_pdb: Path
-        self.raw_pdb: str
+    def __init__(self, path_pdb: Path|str = None, models: list[ms.ParticleGroup] = None):
+        if path_pdb is None:
+            if models is None: models = []
+        elif models is not None:
+            raise ValueError("System constructor requires either a path to a PDB file or a list of ParticleGroup models, but not both.")
+
         self.models: list[ms.ParticleGroup] # store all the models found inside the PDB file
         self.particles: ms.ParticleGroup # points to the current model
-        self._idx_current_model: int = 0
+        self._idx_current_model: int = 0 # for display purposes
 
-        self.path_pdb = Path(path_pdb)
-        if not self.path_pdb.is_file():
-            raise ValueError(f"Path '{path_pdb}' isn't a file.")
+        self.models = self._parse_pdb(path_pdb) \
+            if (path_pdb is not None) else models.copy()
 
-        self.raw_pdb = self.path_pdb.read_text()
-        self.models = list(self._iter_parse_models())
         if not self.models:
-            raise ValueError(f"No particles found in the '{path_pdb}' file. Make sure it's a PDB file.")
+            self.models.append(ms.ParticleGroup([]))
 
         self.particles = self.models[0]
 
@@ -47,7 +47,21 @@ class System:
 
 
     # --------------------------------------------------------------------------
-    def _iter_parse_models(self):
+    def _parse_pdb(self, path_pdb: Path|str) -> list[ms.ParticleGroup]:
+        path_pdb = Path(path_pdb)
+        if not path_pdb.is_file():
+            raise ValueError(f"Path '{path_pdb}' isn't a file.")
+
+        raw_pdb = path_pdb.read_text()
+        models = list(self._iter_parse_models(raw_pdb))
+        if not models:
+            raise ValueError(f"No particles found in the '{path_pdb}' file. Make sure it's a PDB file.")
+
+        return models
+
+
+    # --------------------------------------------------------------------------
+    def _iter_parse_models(self, raw_pdb: str):
         def _extract_next_model() -> tuple[int, str]:
             idx_0 = buffer.find("\nMODEL")
             if idx_0 == -1: return -1, buffer
@@ -58,7 +72,7 @@ class System:
             idx_1 += len("\nENDMDL")
             return idx_1, buffer[idx_0:idx_1]
 
-        buffer = '\n' + self.raw_pdb
+        buffer = '\n' + raw_pdb
         while buffer:
             idx, raw_model = _extract_next_model()
             pg = ms.ParticleGroup.parse_pdb(raw_model)
