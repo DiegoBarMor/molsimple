@@ -38,13 +38,6 @@ class Particle:
     def __repr__(self) -> str:
         return f"Particle({self.idx:>5}:{self.name:<4} @res {self.resid:>4}:{self.resname:<3} @chain {self.chainid}; [{self.xpos},{self.ypos},{self.zpos}])"
 
-
-    # --------------------------------------------------------------------------
-    def get_chain_resid(self) -> "ms.ChainResid":
-        """Returns a `ChainResid` object representing the chain and residue of this particle."""
-        return ms.ChainResid(self.chainid, self.resid)
-
-
     # --------------------------------------------------------------------------
     def format_pdb(self) -> str:
         return ''.join((
@@ -54,6 +47,29 @@ class Particle:
            f"{self.occ:6.2f}{self.beta:6.2f}      {self.segid:<4}",
            f"{self.element:>2}{self.charge:>2}"
         ))
+
+    ########## GETTERS
+    # --------------------------------------------------------------------------
+    def get_position(self) -> tuple[float, float, float]:
+        """Returns the position of this particle as a tuple (x, y, z)."""
+        return (self.xpos, self.ypos, self.zpos)
+
+    # --------------------------------------------------------------------------
+    def get_chain_resid(self) -> "ms.ChainResid":
+        """Returns a `ChainResid` object representing the chain and residue of this particle."""
+        return ms.ChainResid(self.chainid, self.resid)
+
+    ########## SETTERS
+    # --------------------------------------------------------------------------
+    def set_chain_resid(self, chain_resid: "ms.ChainResid") -> None:
+        """Sets the chain and residue of this particle using a `ChainResid` object."""
+        self.chainid = chain_resid.chain
+        self.resid = chain_resid.resid
+
+    # --------------------------------------------------------------------------
+    def set_position(self, position: tuple[float, float, float]) -> None:
+        """Sets the position of this particle."""
+        self.xpos, self.ypos, self.zpos = position
 
 
 # //////////////////////////////////////////////////////////////////////////////

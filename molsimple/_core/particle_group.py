@@ -69,7 +69,7 @@ class ParticleGroup:
 
     # --------------------------------------------------------------------------
     def get_positions(self) -> list[tuple[float, float, float]]:
-        return [(p.xpos, p.ypos, p.zpos) for p in self.particles]
+        return [p.get_position() for p in self.particles]
 
     # --------------------------------------------------------------------------
     def get_betas(self) -> list[float]:
@@ -82,6 +82,48 @@ class ParticleGroup:
     # --------------------------------------------------------------------------
     def get_charges(self) -> list[str]:
         return [p.charge for p in self.particles]
+
+
+    ########## SETTERS
+    # --------------------------------------------------------------------------
+    def set_idxs(self, idxs: list[int]) -> None:
+        for p,idx in zip(self.particles, idxs): p.idx = idx
+
+    # --------------------------------------------------------------------------
+    def set_names(self, names: list[str]) -> None:
+        for p,name in zip(self.particles, names): p.name = name
+
+    # --------------------------------------------------------------------------
+    def set_resnames(self, resnames: list[str]) -> None:
+        for p,resname in zip(self.particles, resnames): p.resname = resname
+
+    # --------------------------------------------------------------------------
+    def set_chainids(self, chainids: list[str]) -> None:
+        for p,chainid in zip(self.particles, chainids): p.chainid = chainid
+
+    # --------------------------------------------------------------------------
+    def set_resids(self, resids: list[int]) -> None:
+        for p,resid in zip(self.particles, resids): p.resid = resid
+
+    # --------------------------------------------------------------------------
+    def set_chain_resids(self, chain_resids: "list[ms.ChainResid]") -> None:
+        for p,chain_resid in zip(self.particles, chain_resids): p.set_chain_resid(chain_resid)
+
+    # --------------------------------------------------------------------------
+    def set_positions(self, positions: list[tuple[float, float, float]]) -> None:
+        for p,position in zip(self.particles, positions): p.set_position(position)
+
+    # --------------------------------------------------------------------------
+    def set_betas(self, betas: list[float]) -> None:
+        for p,beta in zip(self.particles, betas): p.beta = beta
+
+    # --------------------------------------------------------------------------
+    def set_elements(self, elements: list[str]) -> None:
+        for p,element in zip(self.particles, elements): p.element = element
+
+    # --------------------------------------------------------------------------
+    def set_charges(self, charges: list[str]) -> None:
+        for p,charge in zip(self.particles, charges): p.charge = charge
 
 
     ########## SELECTIONS
