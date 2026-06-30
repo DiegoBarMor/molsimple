@@ -10,9 +10,7 @@ class System:
         self.particles: ms.ParticleGroup # points to the current model
         self._idx_current_model: int = 0 # for display purposes
 
-        self.models = [m for m in models] if models \
-            else [ms.ParticleGroup([])]
-
+        self.models = [m for m in models] if models else [ms.ParticleGroup([])]
         self.particles = self.models[0]
 
 
@@ -39,6 +37,7 @@ class System:
         if not obj.models:
             raise ValueError(f"No particles found in the PBD string.")
 
+        obj.particles = obj.models[0]
         return obj
 
 
