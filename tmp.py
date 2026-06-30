@@ -2,9 +2,7 @@ import sys
 import molsimple as ms
 
 # pdb = ms.System()
-pdb = ms.System(sys.argv[1])
-# pdb = ms.System(models = [])
-# pdb = ms.System(sys.argv[1], models = []) # should fail
+pdb = ms.System.read_pdb(sys.argv[1])
 
 print(pdb)
 

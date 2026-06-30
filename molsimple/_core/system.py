@@ -4,21 +4,14 @@ import molsimple as ms
 
 # //////////////////////////////////////////////////////////////////////////////
 class System:
-    def __init__(self, path_pdb: Path|str = None, models: list[ms.ParticleGroup] = None):
-        if path_pdb is None:
-            if models is None: models = []
-        elif models is not None:
-            raise ValueError("System constructor requires either a path to a PDB file or a list of ParticleGroup models, but not both.")
+    def __init__(self, models: list[ms.ParticleGroup]|None = None):
 
         self.models: list[ms.ParticleGroup] # store all the models found inside the PDB file
         self.particles: ms.ParticleGroup # points to the current model
         self._idx_current_model: int = 0 # for display purposes
 
-        self.models = self._parse_pdb(path_pdb) \
-            if (path_pdb is not None) else models.copy()
-
-        if not self.models:
-            self.models.append(ms.ParticleGroup([]))
+        self.models = [m for m in models] if models \
+            else [ms.ParticleGroup([])]
 
         self.particles = self.models[0]
 
@@ -39,25 +32,32 @@ class System:
 
 
     # --------------------------------------------------------------------------
+    @classmethod
+    def from_pdb_string(cls, raw_pdb: str) -> "System":
+        obj = cls()
+        obj.models = list(obj._iter_parse_models(raw_pdb))
+        if not obj.models:
+            raise ValueError(f"No particles found in the PBD string.")
+
+        return obj
+
+
+    # --------------------------------------------------------------------------
+    @classmethod
+    def read_pdb(cls, path_pdb: Path|str) -> "System":
+        path_pdb = Path(path_pdb)
+        if not path_pdb.is_file():
+            raise ValueError(f"Path '{path_pdb}' isn't a file.")
+
+        return cls.from_pdb_string(raw_pdb = path_pdb.read_text())
+
+
+    # --------------------------------------------------------------------------
     def switch_model(self, idx_model: int):
         if idx_model < 0 or idx_model >= len(self.models):
             raise ValueError(f"Invalid model index {idx_model} (must be between 0 and {len(self.models)-1}).")
         self._idx_current_model = idx_model
         self.particles = self.models[idx_model]
-
-
-    # --------------------------------------------------------------------------
-    def _parse_pdb(self, path_pdb: Path|str) -> list[ms.ParticleGroup]:
-        path_pdb = Path(path_pdb)
-        if not path_pdb.is_file():
-            raise ValueError(f"Path '{path_pdb}' isn't a file.")
-
-        raw_pdb = path_pdb.read_text()
-        models = list(self._iter_parse_models(raw_pdb))
-        if not models:
-            raise ValueError(f"No particles found in the '{path_pdb}' file. Make sure it's a PDB file.")
-
-        return models
 
 
     # --------------------------------------------------------------------------
