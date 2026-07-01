@@ -20,6 +20,14 @@ class ParticleGroup:
         return iter(self.particles)
 
     # --------------------------------------------------------------------------
+    def __getitem__(self, idx: int) -> ms.Particle:
+        return self.particles[idx]
+
+    # --------------------------------------------------------------------------
+    def __setitem__(self, idx: int, value: ms.Particle) -> None:
+        self.particles[idx] = value
+
+    # --------------------------------------------------------------------------
     @classmethod
     def parse_pdb(cls, data_pdb: str = ""):
         return cls((
@@ -160,11 +168,13 @@ class ParticleGroup:
 
     # --------------------------------------------------------------------------
     def select_resid(self, *resids: int) -> "ParticleGroup":
+        """NOTE: `resid` alone isn't enough to define a unique residue, use `chain_resid` instead if that's the intention."""
         return ParticleGroup(p for p in self.particles if p.resid in resids)
 
     # --------------------------------------------------------------------------
     def select_chain_resid(self, *chainresids: "ms.ChainResid") -> "ParticleGroup":
         return ParticleGroup(p for p in self.particles if p.get_chain_resid() in chainresids)
+
 
     ########## SELECTIONS (FANCIER)
     # --------------------------------------------------------------------------
@@ -192,7 +202,6 @@ class ParticleGroup:
     def split_residues(self) -> list["ParticleGroup"]:
         chainresids = sorted(set(p.get_chain_resid() for p in self.particles))
         return [self.select_chain_resid(chainresid) for chainresid in chainresids]
-
 
 
 # //////////////////////////////////////////////////////////////////////////////

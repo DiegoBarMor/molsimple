@@ -15,11 +15,25 @@ class ChainResid:
 
     # --------------------------------------------------------------------------
     def __eq__(self, other: object) -> bool:
-        if isinstance(other, str):
-            other = ChainResid.from_dotstr(other)
-        if not isinstance(other, ChainResid):
-            raise TypeError(f"Cannot compare ChainResid with {type(other)}.")
+        other = self._assert_compare_other(other)
         return self.chain == other.chain and self.resid == other.resid
+
+
+    # --------------------------------------------------------------------------
+    def __lt__(self, other: object) -> bool:
+        other = self._assert_compare_other(other)
+        return (self.chain, self.resid) < (other.chain, other.resid)
+
+
+    # --------------------------------------------------------------------------
+    def __gt__(self, other: object) -> bool:
+        other = self._assert_compare_other(other)
+        return (self.chain, self.resid) > (other.chain, other.resid)
+
+
+    # --------------------------------------------------------------------------
+    def __hash__(self) -> int:
+        return hash((self.chain, self.resid))
 
 
     # --------------------------------------------------------------------------
@@ -37,6 +51,14 @@ class ChainResid:
     def get_dotstr(self) -> str:
         """Returns a string in the format `chainid.resid`."""
         return f"{self.chain}.{self.resid}"
+
+
+    # --------------------------------------------------------------------------
+    @staticmethod
+    def _assert_compare_other(other: "object") -> "ChainResid":
+        if isinstance(other, ChainResid): return other
+        if isinstance(other, str): return ChainResid.from_dotstr(other)
+        raise TypeError(f"Cannot compare ChainResid with {type(other)}.")
 
 
 # //////////////////////////////////////////////////////////////////////////////

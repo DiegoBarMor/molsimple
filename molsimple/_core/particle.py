@@ -48,6 +48,7 @@ class Particle:
            f"{self.element:>2}{self.charge:>2}"
         ))
 
+
     ########## GETTERS
     # --------------------------------------------------------------------------
     def get_position(self) -> tuple[float, float, float]:
@@ -55,9 +56,16 @@ class Particle:
         return (self.xpos, self.ypos, self.zpos)
 
     # --------------------------------------------------------------------------
+    def get_position_numpy(self):
+        """Returns the position of this particle as a NumPy array."""
+        import numpy as np
+        return np.array(self.get_position())
+
+    # --------------------------------------------------------------------------
     def get_chain_resid(self) -> "ms.ChainResid":
         """Returns a `ChainResid` object representing the chain and residue of this particle."""
         return ms.ChainResid(self.chainid, self.resid)
+
 
     ########## SETTERS
     # --------------------------------------------------------------------------
