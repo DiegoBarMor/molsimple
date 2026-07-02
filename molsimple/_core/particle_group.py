@@ -85,6 +85,11 @@ class ParticleGroup:
         return np.array(self.get_positions())
 
     # --------------------------------------------------------------------------
+    def get_center_of_geometry(self):
+        import numpy as np
+        return np.mean(self.get_positions_numpy(), axis = 0)
+
+    # --------------------------------------------------------------------------
     def get_betas(self) -> list[float]:
         return [p.beta for p in self.particles]
 
@@ -177,6 +182,14 @@ class ParticleGroup:
 
 
     ########## SELECTIONS (FANCIER)
+    # --------------------------------------------------------------------------
+    def select_water(self) -> "ParticleGroup":
+        return ParticleGroup(p for p in self.particles if p.resname in ms.KnownResidues.WATER)
+
+    # --------------------------------------------------------------------------
+    def select_non_water(self) -> "ParticleGroup":
+        return ParticleGroup(p for p in self.particles if p.resname not in ms.KnownResidues.WATER)
+
     # --------------------------------------------------------------------------
     def select_hydrogens(self) -> "ParticleGroup":
         return ParticleGroup(p for p in self.particles if p.name.startswith("H"))
