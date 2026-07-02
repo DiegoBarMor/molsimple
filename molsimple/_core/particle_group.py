@@ -199,6 +199,14 @@ class ParticleGroup:
         return ParticleGroup(p for p in self.particles if not p.name.startswith("H"))
 
     # --------------------------------------------------------------------------
+    def select_first_altloc(self) -> "ParticleGroup":
+        """
+        Naively implemented to only choose atoms with `altloc == 'A'` or `altloc == ' '`
+        to avoid unnecessary complexity/performance loss.
+        """
+        return ParticleGroup(p for p in self.particles if p.altloc in ('A', ''))
+
+    # --------------------------------------------------------------------------
     def select_mask(self, mask: list[bool]) -> "ParticleGroup":
         assert len(mask) == len(self.particles), "Length of mask must match the number of particles."
         return ParticleGroup(p for p,m in zip(self.particles, mask) if m)
